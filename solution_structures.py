@@ -21,6 +21,7 @@ Output data:
 Structure files of solid solutions in rv_at format with corresponding visualization files in xyz format.
 They can contain vacancies if structure type 'vacancy' was choosen.
 
+Program can be used as importable or executable
 
 \\newpage
 
