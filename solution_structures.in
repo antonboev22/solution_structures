@@ -1,0 +1,54 @@
+# Set of the structure type (vacancy, melting)
+type_of_structure  melting
+
+# Parameters common for any structure type
+#******************************************************************
+# Set of matrix and solute elements 
+# (symbol, atomic mass, lattice parameter, bulk modulus, sort, concentration (for solute elements))
+matrix_atom        V    50.9415    3.028    180    2    
+solute_atom_1      Ti   47.867     3.254    106    1    0.1
+solute_atom_2      Fe   55.847     2.860    169    3    0.2
+number_of_elements 3
+
+# Set of the interatomic potentials
+pot1             Ti_20_24_ZBL
+pot2             V_10_2_ZBL
+pot12            Ti_20_24_V_10_2
+# Level of folder nesting
+level            3
+
+# Maximal distance from center of the initial cell to any solute atom
+max_distance_center_solute  1000
+
+# Is change of sort of the matrix elemet needed?
+switch_i_sort_at         True
+
+# Path to file with initial lattice
+path_to_initial_file        ./at_melt_V
+
+# Number of randon configurations for choosen concentrations of solute elements
+number_of_solution_configs    2
+
+# Set of nodes' names list for calculations and name of the computational cluster
+cluster         knit
+list_of_nodes   node13,node14,node15,node16,node17,node18,node19
+*******************************************************************
+
+# Parameters need for structure type melting
+#==================================================================
+# Location of the interface 
+interface_position_z     0.0
+#==================================================================
+
+# Parameters need for structure type vacancy
+#------------------------------------------------------------------
+md0_vol_defect_need           False
+n_cycle_vol_defect            5000
+#bulk_modulus                 150.
+t_step                        3.
+max_distance_vacancy_solute   4.3
+#------------------------------------------------------------------
+
+
+
+
