@@ -476,8 +476,9 @@ def selected_insert_vacancies(num_el=0, composition_name = '', version = None, a
         S.copy('id_'+composition_name+'_'+str(version), composition_name+'/'+str(n)+'/'+str(i+1)+'_'+str(min_dist)+'/dataw')
         S.move('vac_'+str(i+1)+'_'+str(version),        composition_name+'/'+str(n)+'/'+str(i+1)+'_'+str(min_dist)+'/dataw')
         S.move('vac_'+str(i+1)+'_'+str(version)+'.xyz', composition_name+'/'+str(n)+'/'+str(i+1)+'_'+str(min_dist))
-        S.move('md0_vol_defect.in',                     composition_name+'/'+str(n)+'/'+str(i+1)+'_'+str(min_dist))
-        S.move('run',                                   composition_name+'/'+str(n)+'/'+str(i+1)+'_'+str(min_dist))
+        if md0_vol_defect_need == 'True':
+            S.move('md0_vol_defect.in',                     composition_name+'/'+str(n)+'/'+str(i+1)+'_'+str(min_dist))
+            S.move('run',                                   composition_name+'/'+str(n)+'/'+str(i+1)+'_'+str(min_dist))
 
 # Function of lattice scaling according to the solute atom concentrations
 def lattice_scaling(num_el = 0, sol_at_concs = [], sol_at_acells = [], matr_at_acell = 0, latt_dict = {}):
