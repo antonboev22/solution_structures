@@ -1,4 +1,4 @@
-# Set of the structure type (vacancy, melting)
+# Set of the structure type (vacancy, melting, simple_solid_solution)
 type_of_structure  melting
 
 # Parameters common for any structure type
