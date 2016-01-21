@@ -927,3 +927,78 @@ if __name__ == '__main__':
                                       list_of_nodes = list_of_nodes)
 
 
+    #====================================================================================
+    #============================= SIMPLE SOLID SOLUTION ================================
+    #====================================================================================
+    elif type_of_structure == 'simple_solid_solution':
+        # Build of the directory for choosen concentrations of solute elements
+        name = name_composition(num_el = number_of_elements, 
+                                at_names = atom_names, 
+                                sol_at_concs = solute_atom_concentrations, 
+                                version = None)
+        create_dir(name)
+
+        #======================== BUILD OF THE IDEAL SOLID SOLUTION =====================
+        # Conversion of set of the atoms into list of lists, containing following information about atom:
+        # [num_at_r[i], i_sort_at[i], mass_at[i], r_at[i], v_at[i]] (order number, sort, mass, 
+        # cartesian coordinates, velocity)
+        # Parameters n_at, n_mark_at, size, a_lattice3, mark_at, mark_green are common for both.
+        main_top_part, main_top_part_numbers = extract_block(dict_main = d1, 
+                                                             criterion = 'True')
+
+        # Determination of the bulk modulus according to solute concentrations
+        new_cbulk = cbulk_scaling(num_el = number_of_elements, 
+                                  sol_at_concs = solute_atom_concentrations, 
+                                  sol_at_cbulks = solute_atom_cbulks, 
+                                  matr_at_cbulk = matrix_atom_cbulk)
+
+        # Random choise of atoms for replacement by solute atoms with subsequent writing of 
+        # the structure into file in rv_at format      
+        for n in range(1,number_of_solution_configs+1):
+            create_dir(name+'/'+str(n))
+            # Preparing of current lists and dictionaries
+            d2 = copy.deepcopy(d1)
+            id_lat = copy.deepcopy(main_top_part)
+            id_lat_numbers = copy.deepcopy(main_top_part_numbers)
+
+
+            # Replacement of matrix atoms
+            changed_structure = selected_insert_solute_atoms(num_el = number_of_elements,
+                                                             at_names = atom_names,
+                                                             atomic_blocks = (id_lat,), 
+                                                             atomic_block_names = ('id',), 
+                                                             atomic_numbers = (id_lat_numbers,), 
+                                                             sol_at_concs = solute_atom_concentrations, 
+                                                             sol_at_sort_ats = solute_atom_sort_ats, 
+                                                             sol_at_masses = solute_atom_masses, 
+                                                             criterion = 'distance_from_center', 
+                                                             max_dist_cent_sol = max_distance_center_solute, 
+                                                             repl_at_lists = [], 
+                                                             dict_main = d2)
+            # Writing of changes into rv_at dictionary
+            d2 = write_replaced_atoms(changes = changed_structure, 
+                                      dict_aux = d1, 
+                                      dict_main = d2)
+
+            # Lattice parameters scaling according to the solute concentrations
+            d2 = lattice_scaling(num_el = number_of_elements, 
+                                 sol_at_concs = solute_atom_concentrations, 
+                                 sol_at_acells = solute_atom_acells, 
+                                 matr_at_acell = matrix_atom_acell, 
+                                 latt_dict = d2)
+            e1.w_rv_at('id_'+name+'_'+str(n), d2)
+
+            # Visualization of ideal solid solution in xyz format
+            blocks = selected_insert_solute_atoms.blocks
+            for key in blocks:
+                xyz_format(num_el = number_of_elements, 
+                           atomic_block = blocks[key], 
+                           name_block = key, 
+                           name_composition = name+'_'+str(n), 
+                           at_names = atom_names, 
+                           matr_at_sort_at = matrix_atom_sort_at, 
+                           sol_at_sort_ats = solute_atom_sort_ats)
+
+            # Copy of file with the ideal structure and its xyz representation into corresponding folder
+            S.copy('id_'+name+'_'+str(n), name+'/'+str(n))
+            S.copy('id_'+name+'_'+str(n)+'.xyz', name+'/'+str(n))
